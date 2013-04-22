@@ -12,4 +12,5 @@ group :test do
   gem "rspec"
   gem "simplecov"
   gem "webmock"
+  gem 'cane', :require => false, :platforms => [:ruby_19]
 end

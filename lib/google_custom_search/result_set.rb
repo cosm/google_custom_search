@@ -1,6 +1,7 @@
 module GoogleCustomSearch
   class ResultSet
-    attr_accessor :total, :results, :per_page, :start_index, :end_index, :suggestion
+    attr_accessor :total, :results, :per_page, :start_index, :end_index,
+      :suggestion
 
     def initialize(options = {})
       @total = options[:total] || 0
