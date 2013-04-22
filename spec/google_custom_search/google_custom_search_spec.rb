@@ -62,46 +62,46 @@ describe GoogleCustomSearch do
             with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
             to_return(:status => 200, :body => single_result_xml)
 
-          @results = GoogleCustomSearch.search("banana")
+          @search = GoogleCustomSearch.search("banana")
         end
 
         it "should get a page of results" do
-          @results.should_not be_nil
+          @search.should_not be_nil
         end
 
         it "should return the current start index" do
-          @results.start_index.should == 1
+          @search.start_index.should == 1
         end
 
         it "should return the current end index" do
-          @results.end_index.should == 1
+          @search.end_index.should == 1
         end
 
         it "should return the current page size" do
-          @results.per_page.should == 20
+          @search.per_page.should == 20
         end
 
         it "should return the total results" do
-          @results.total.should == 1
+          @search.total.should == 1
         end
 
         it "should return a calculated current page number" do
-          @results.page.should == 1
+          @search.page.should == 1
         end
 
         it "should return a calculated total pages" do
-          @results.total_pages.should == 1
+          @search.total_pages.should == 1
         end
 
         it "should have an array of result objects" do
-          @results.results.is_a?(Array).should == true
-          @results.results.size.should == 1
-          @results.results.first.is_a?(GoogleCustomSearch::Result).should == true
+          @search.results.is_a?(Array).should == true
+          @search.results.size.should == 1
+          @search.results.first.is_a?(GoogleCustomSearch::Result).should == true
         end
 
         context "the results" do
           before(:each) do
-            @result = @results.results.first
+            @result = @search.results.first
           end
 
           it "should have populated the result object properly" do
@@ -118,50 +118,50 @@ describe GoogleCustomSearch do
             with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
             to_return(:status => 200, :body => multiple_result_xml)
 
-          @results = GoogleCustomSearch.search("raspberry")
+          @search = GoogleCustomSearch.search("raspberry")
         end
 
         it "should get a page of results" do
-          @results.should_not be_nil
+          @search.should_not be_nil
         end
 
         it "should return the current start index" do
-          @results.start_index.should == 11
+          @search.start_index.should == 11
         end
 
         it "should return the current end index" do
-          @results.end_index.should == 12
+          @search.end_index.should == 12
         end
 
         it "should return the current page size" do
-          @results.per_page.should == 2
+          @search.per_page.should == 2
         end
 
         it "should return the total results" do
-          @results.total.should == 123
+          @search.total.should == 123
         end
 
         it "should return a calculated current page number" do
-          @results.page.should == 6
+          @search.page.should == 6
         end
 
         it "should return a calculated total pages" do
-          @results.total_pages.should == 62
+          @search.total_pages.should == 62
         end
 
         it "should have an array of result objects" do
-          @results.results.is_a?(Array).should == true
-          @results.results.size.should == 2
-          @results.results.first.is_a?(GoogleCustomSearch::Result).should == true
+          @search.results.is_a?(Array).should == true
+          @search.results.size.should == 2
+          @search.results.first.is_a?(GoogleCustomSearch::Result).should == true
         end
 
         it "should return a spelling suggestion if present" do
-          @results.suggestion.should == "raspberry"
+          @search.suggestion.should == "raspberry"
         end
 
         context "the results" do
           before(:each) do
-            @result = @results.results.first
+            @result = @search.results.first
           end
 
           it "should have populated the result object properly" do
@@ -178,23 +178,23 @@ describe GoogleCustomSearch do
             with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
             to_return(:status => 200, :body => no_result_xml)
 
-          @results = GoogleCustomSearch.search("raspberry")
+          @search = GoogleCustomSearch.search("raspberry")
         end
 
         it "should get a page of results" do
-          @results.should_not be_nil
+          @search.should_not be_nil
         end
 
         it "should return the total results" do
-          @results.total.should == 0
+          @search.total.should == 0
         end
 
         it "should return an empty array of results" do
-          @results.results.should == []
+          @search.results.should == []
         end
 
         it "should still return suggestion if present" do
-          @results.suggestion.should == "squash"
+          @search.suggestion.should == "squash"
         end
       end
 
