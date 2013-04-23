@@ -20,24 +20,7 @@ module GoogleCustomSearch
       raise GoogleCustomSearch::TimeoutError, e.message
     end
 
-    begin
-      data = MultiXml.parse(xml)['GSP']
-    rescue MultiXml::ParseError => e
-      raise GoogleCustomSearch::InvalidXML, e.message
-    end
-
-    # Extract and return search result data, if exists.
-    if data['RES']
-      ResultSet.new(:total => data['RES']['M'].to_i,
-                    :start_index => data['RES']['SN'].to_i,
-                    :end_index => data['RES']['EN'].to_i,
-                    :per_page => data['PARAM'].detect { |param| param["name"] == "num" }["value"].to_i,
-                    :suggestion => data['Spelling'] ? data['Spelling']['Suggestion']['q'] : nil,
-                    :results => parse_results(data['RES']['R']))
-
-    else
-      ResultSet.new(:suggestion => data['Spelling'] ? data['Spelling']['Suggestion']['q'] : nil)
-    end
+    return ResultSet.new(xml)
   end
 
   ##
@@ -60,12 +43,12 @@ module GoogleCustomSearch
   # Build search request URI.
   #
   def build_uri(query, options = {})
-    options = { :offset => 0, :length => 20 }.merge(options)
+    options = { :offset => 0, :per_page => 10 }.merge(options.delete_if { |k,v| v.nil? })
 
     params = {
       :q      => query,
       :start  => options[:offset],
-      :num    => options[:length],
+      :num    => options[:per_page],
       :client => "google-csbe",
       :output => "xml_no_dtd",
       :cx     => GoogleCustomSearch.configuration.cx
@@ -108,19 +91,6 @@ module GoogleCustomSearch
     raise GoogleCustomSearch::ServerError if response.code.match(/5\d{2}/)
 
     response.body
-  end
-
-  ##
-  # Transform an array of Google search results (XML parsed by REXML) into
-  # a more useful format.
-  #
-  def parse_results(results)
-    out = []
-    results = [results] if results.is_a?(Hash) # no array if only one result
-    results.each do |r|
-      out << Result.new(r)
-    end
-    out
   end
 
   def user_agent
