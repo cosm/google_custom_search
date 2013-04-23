@@ -45,6 +45,10 @@ module GoogleCustomSearch
   def build_uri(query, options = {})
     options = { :offset => 0, :per_page => 10 }.merge(options.delete_if { |k,v| v.nil? })
 
+    if options[:page]
+      options[:offset] = calculated_offset(options)
+    end
+
     params = {
       :q      => query,
       :start  => options[:offset],
@@ -95,5 +99,11 @@ module GoogleCustomSearch
 
   def user_agent
     "GoogleCustomSearch/#{GoogleCustomSearch::VERSION} - https://github.com/cosm/google_custom_search (Ruby/#{RUBY_VERSION})"
+  end
+
+  def calculated_offset(options)
+    page = options[:page].to_i < 1 ? 1 : options[:page].to_i
+
+    return (page - 1) * options[:per_page]
   end
 end
