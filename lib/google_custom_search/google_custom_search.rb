@@ -104,6 +104,6 @@ module GoogleCustomSearch
   def calculated_offset(options)
     page = options[:page].to_i < 1 ? 1 : options[:page].to_i
 
-    return (page - 1) * options[:per_page]
+    return (page - 1) * options[:per_page].to_i
   end
 end
