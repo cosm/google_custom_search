@@ -108,12 +108,21 @@ describe GoogleCustomSearch do
           request_stub.should have_been_made
         end
 
+        it "should handle string parameters correctly" do
+          request_stub = stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=10&output=xml_no_dtd&q=banana&start=0").
+            with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
+            to_return(:status => 200, :body => single_result_xml)
+
+          GoogleCustomSearch.search("banana", :page => "0")
+          request_stub.should have_been_made
+        end
+
         it "should respect the per_page setting" do
           request_stub = stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=7&output=xml_no_dtd&q=banana&start=14").
             with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
             to_return(:status => 200, :body => single_result_xml)
 
-          GoogleCustomSearch.search("banana", :page => 3, :per_page => 7)
+          GoogleCustomSearch.search("banana", :page => "3", :per_page => "7")
           request_stub.should have_been_made
         end
       end
