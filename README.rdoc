@@ -39,19 +39,22 @@ If you aren't using Rails, then you just need to add this initialization block s
 To perform a search:
 
   search = GoogleCustomSearch.search("Hank Aaron")
-  search = GoogleCustomSearch.search("Hank Aaron", :offset => 20, :length => 10)
+  search = GoogleCustomSearch.search("Hank Aaron", :offset => 20, :per_page => 20)
+  search = GoogleCustomSearch.search("Hank Aaron", :page => 2)
+
+If the page parameter is supplied then this will overwrite offset (behind the scenes we calculate a new offset derived from the page number and per_page value.
 
 The +results+ variable is now a GoogleCustomSearch::ResultSet object:
 
-  search.total            # total number of results (integer)
+  search.total_entries    # total number of results (integer)
   search.per_page         # current page size
   search.results          # array of result objects
   search.suggestion       # suggested search term, if any
   search.start_index      # index of the first result in the current page
   search.end_index        # index of the last result in the current page
-  search.page             # current page number (calculated from above values)
+  search.current_page     # current page number (calculated from above values)
   search.total_pages      # total number of pages for the current query
-
+  search.offset           # offset parameter
 
 Iterate through the results:
 
