@@ -71,6 +71,53 @@ describe GoogleCustomSearch do
         request_stub.should have_been_made
       end
 
+      context "page parameter" do
+        it "should set start to 0 if page is 0" do
+          request_stub = stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=10&output=xml_no_dtd&q=banana&start=0").
+            with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
+            to_return(:status => 200, :body => single_result_xml)
+
+          GoogleCustomSearch.search("banana", :page => 0)
+          request_stub.should have_been_made
+        end
+
+        it "should set start to 0 if page is nil" do
+          request_stub = stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=10&output=xml_no_dtd&q=banana&start=0").
+            with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
+            to_return(:status => 200, :body => single_result_xml)
+
+          GoogleCustomSearch.search("banana", :page => nil)
+          request_stub.should have_been_made
+        end
+
+        it "should set start to 0 if page is 1" do
+          request_stub = stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=10&output=xml_no_dtd&q=banana&start=0").
+            with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
+            to_return(:status => 200, :body => single_result_xml)
+
+          GoogleCustomSearch.search("banana", :page => 1)
+          request_stub.should have_been_made
+        end
+
+        it "should set start to correct offset if page is 2" do
+          request_stub = stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=10&output=xml_no_dtd&q=banana&start=10").
+            with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
+            to_return(:status => 200, :body => single_result_xml)
+
+          GoogleCustomSearch.search("banana", :page => 2)
+          request_stub.should have_been_made
+        end
+
+        it "should respect the per_page setting" do
+          request_stub = stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=7&output=xml_no_dtd&q=banana&start=14").
+            with(:headers => {'User-Agent' => GoogleCustomSearch.send(:user_agent) }).
+            to_return(:status => 200, :body => single_result_xml)
+
+          GoogleCustomSearch.search("banana", :page => 3, :per_page => 7)
+          request_stub.should have_been_made
+        end
+      end
+
       context "with http errors" do
         it "should raise InvalidRequest on a 300 type response" do
           stub_request(:get, "https://www.google.com:443/cse?client=google-csbe&cx=1234&ie=utf8&num=10&output=xml_no_dtd&q=raspberry&start=0").
